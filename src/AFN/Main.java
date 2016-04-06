@@ -21,11 +21,18 @@ public class Main {
 			try {
 				System.out.print("Ingrese la ruta del archivo a cargar");
 				path= obj.nextLine();
-				afn=createAFNFromFile(path);
-				if(afn.getIdAFN() != null){
+				afn=createAFNFromFile(path);  // regresa  un objeto tipo AFN a partir de la ruta de un archivo 
+				if(afn.getIdAFN() != null){ //si el afn se creo correctamente pide la cadena a evaluar  
 					System.out.println("ingrese la cadena a analizar");
 					String str=obj.nextLine();
-					Analizador.cadena(str, afn);
+					if(Analizador.cadena(str, afn)){ // recibe la cadena a evaluar y el afn que la valída regresa un booleano
+						System.out.println("La cadena " + str +" es valida");
+//						Analizador.imprimirAFN(afn);
+//						if(!Analizador.imprimirRecorrido())
+//							System.out.println("no se ha analizado ningun automata");
+					}else{
+						System.out.println("La cadena " + str +" es invalida");
+					}	
 					
 				}
 			} catch (Exception e) {
@@ -44,7 +51,7 @@ public class Main {
 		try {
 			String estados;
 			String alfabeto;
-			char estadoInicial = ' ';
+			String estadoInicial = "";
 			String estadosFinales;
 			String[] estadosFinalesArray=null;
 			 Set<Estado> estadosSet=new HashSet<Estado>();
@@ -59,14 +66,14 @@ public class Main {
 				case 0:
 					 estados = currentLine;
 					 String[] estadosArrayString = estados.split(",");
-					 estadosSet=createEstados(estadosArrayString);
+					 estadosSet=createEstados(estadosArrayString); //recibe un arreglo de strings y regresa un Set de tipo Estado crea  
 					break;
 				case 1:
 					 alfabeto = currentLine;
 					 alfabetoArray=alfabeto.split(",");
 					break;
 				case 2: 
-					 estadoInicial = currentLine.charAt(0);
+					 estadoInicial = currentLine;
 					break;
 				case 3:	
 					estadosFinales = currentLine;
@@ -79,30 +86,35 @@ public class Main {
 				
 				i++;
 			}
-			Estado estadoInicialAFN=getEstado(estadoInicial, estadosSet);
+			Estado estadoInicialAFN=getEstado(estadoInicial, estadosSet); //recibe in String y un Set de Estado y regresa un objteto Tipo estado
 			
-			boolean estadoInicialValido=validateEstado(estadoInicialAFN);
-			boolean estadosFinalesValidos =validateEstadoArray(estadosFinalesArray, estadosSet);  
+			boolean estadoInicialValido=validateEstado(estadoInicialAFN); //recibe un String y regresa un booleano
+			boolean estadosFinalesValidos =validateEstadoArray(estadosFinalesArray, estadosSet); //recibe un arreglo de strins que representan estados finales y un conjunto de estados regresa un booleano
 			
-			if(estadoInicialValido && estadosFinalesValidos){
+			
+			if(estadoInicialValido && estadosFinalesValidos){ //verifica si los estados finales y el inicial se encuentran en en conjunto de estados  
 				
 				Set<Estado>  estadosFinalesAFN = new HashSet<Estado>();
 				
 				
 				for (String e : estadosFinalesArray) {
-						estadosFinalesAFN.add(getEstado(e.charAt(0), estadosSet));
+						estadosFinalesAFN.add(getEstado(e, estadosSet)); 
 				}
 				
 					afn.setEstadoInicial(estadoInicialAFN);
 					afn.setEstadosFinales(estadosFinalesAFN);
 				
+					//agrega las transiciones a los estados 
+					
 				for (String transicionStr : transiciones) {
 					String[] transicionArray  =transicionStr.split(",");
-					Estado estadoOrigen = getEstado(transicionArray[0].charAt(0), estadosSet);
+					Estado estadoOrigen = getEstado(transicionArray[0], estadosSet);
 					char simbolo=transicionArray[1].charAt(0);
-					Estado estadoDestino = getEstado(transicionArray[2].charAt(0), estadosSet);
-					if(validateEstado(estadoOrigen) && validateEstado(estadoDestino) && validateAlfabeto(simbolo, alfabetoArray)){
+					Estado estadoDestino = getEstado(transicionArray[2], estadosSet);
+					// Valida que los  simbolos y los estados de las transiciones esten definidos en su respectivo elemento de quintupla
+					if(validateEstado(estadoOrigen) && validateEstado(estadoDestino) && validateAlfabeto(simbolo, alfabetoArray)){     
 						Set<Estado> destinos = new HashSet<Estado>();
+//						agrega las transiciones a los estados
 						destinos.add(estadoDestino);
 						Transicion t=new Transicion();
 							t.setDestinos(destinos);
@@ -139,7 +151,8 @@ public class Main {
 		return afn;
 	}
 	
-	private static Set<Estado> createEstados(String idStr[]) {
+	// recibe un arreglo de strings y por cada uno crea un objeto de tipo estado y lo agrega a un set y lo devuedlve
+	private static Set<Estado> createEstados(String idStr[]) { 
 		Set<Estado> estados= new HashSet<Estado>();
 		for (String id : idStr) {
 			Estado e=new Estado(Integer.valueOf(id));
@@ -149,11 +162,10 @@ public class Main {
 		return estados;
 		
 	}
-	
-	private static Estado getEstado(char c,Set<Estado> estados){
+	 //recibe un string y un conjunto de estados, lo itera y compara el id de cada uno con el valor entero del string y lo devuelve
+	private static Estado getEstado(String c,Set<Estado> estados){
 		Estado estado=null;
 		for (Estado e : estados) {
-			System.out.println(e.getIdEstado());
 			if(e.getIdEstado() == Integer.valueOf(c)){
 				estado=e;
 				break;
@@ -172,7 +184,7 @@ public class Main {
 	private static boolean validateEstadoArray(String[] array,Set<Estado> estados){
 		boolean valid= true;
 		for (String e : array) {
-			Estado estado = getEstado(e.charAt(0), estados);
+			Estado estado = getEstado(e, estados);
 			if(!validateEstado(estado)){
 				valid=false;
 				break;
