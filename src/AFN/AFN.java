@@ -8,7 +8,6 @@ import java.util.Stack;
 public class AFN {
 	private Integer idAFN;
 	private Estado estadoInicial;
-//	private Set<Estado> estados=new HashSet<Estado>();	 
 	private Set<Estado> estadosFinales=new HashSet<Estado>();
 	
 	public AFN(){
