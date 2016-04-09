@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import AFN.Transicion;
+
 
 public abstract  class Analizador {
 	public static final char EPSILON='\u0000';
@@ -19,10 +21,21 @@ public abstract  class Analizador {
 		e.add(i);
 		Set<Estado> c=afn.cerraduraEpsilon(e);
 		while (cadena.length() > index) {
+			
+			for (Estado estado : c) {
+				for (Transicion transicion : estado.getTransiciones()) {
+					for(Estado destino :transicion.getDestinos()){
+						System.out.print( destino.getIdEstado()+"("+transicion.getSimbolo()+")->" +estado.getIdEstado()+"->");
+						if(afn.getEstadosFinales().contains(estado))
+							break;
+							
+					}
+				}
+			}
+			System.out.println("");
 			caracterActual=cadena.charAt(index);
 			Set<Estado> r=afn.irA(c,caracterActual);
-			recorrido.add(r);
-			
+//			recorrido.add(r);
 			if(r.isEmpty()){
 				belongs = false;
 			}
@@ -33,40 +46,37 @@ public abstract  class Analizador {
 		for (Estado estado : c) {
 			if(afn.getEstadosFinales().contains(estado)){
 				belongs = true;
-				for (Transicion transicion : estado.getTransiciones()){
-					System.out.print(estado.getIdEstado() +"("+transicion.getSimbolo()+") ->");
-					
-				}
 			}
-				
 		}
-		
 		return belongs;
-		
-	
 	}
 	
-	public static boolean imprimirRecorrido() {
-		if (recorrido.size()>0) {
-			
-			for (Set<Estado> set : recorrido) {
-				for (Estado estado : set) {
-					Set<Transicion> transiciones=estado.getTransiciones();
-					for (Transicion transicion : transiciones) {
-						if(recorrido.indexOf(set)!=recorrido.size()-1){
-							System.out.print(estado.getIdEstado() +" ( "+ transicion.getSimbolo() + ") ->");
-						}else{
-							System.out.print(estado.getIdEstado() +" ( "+ transicion.getSimbolo() + ") ");
-						}
-					}
-				}
-			}	
-			return true;
-		}else{
-			return false;
-		}
+	
+//	public static boolean imprimirRecorrido() {
+//		if (recorrido.size()>0) {
+//			for (Estado estado : recorrido) {
+//				for (Transicion transicion : recorrido) {
+//					
+//				}
+//			}
+//			for (Set<Estado> set : recorrido) {
+//				for (Estado estado : set) {
+//					Set<Transicion> transiciones=estado.getTransiciones();
+//					for (Transicion transicion : transiciones) {
+//						if(recorrido.indexOf(set)!=recorrido.size()-1){
+//							System.out.print(estado.getIdEstado() +" ( "+ transicion.getSimbolo() + ") ->");
+//						}else{
+//							System.out.print(estado.getIdEstado() +" ( "+ transicion.getSimbolo() + ") ");
+//						}
+//					}
+//				}
+//			}	
+//			return true;
+//		}else{
+//			return false;
+//		}
 		
-	}
+//	}
 	
 	public static void imprimirAFN(AFN afn){
 		Estado estadoInicial= afn.getEstadoInicial();

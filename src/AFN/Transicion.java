@@ -1,7 +1,10 @@
 package AFN;
 
+
 import java.util.HashSet;
 import java.util.Set;
+
+import AFN.Estado;
 
 public class Transicion {
 	private char simbolo;

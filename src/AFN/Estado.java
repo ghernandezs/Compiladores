@@ -4,6 +4,8 @@ package AFN;
 import java.util.HashSet;
 import java.util.Set;
 
+import AFN.Transicion;
+
 public class Estado {
 	private Integer idEstado;
 	private Set<Transicion> transiciones=new HashSet<Transicion>();

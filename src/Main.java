@@ -1,4 +1,4 @@
-package AFN;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -11,6 +11,10 @@ import java.util.Set;
 
 import org.omg.IOP.ExceptionDetailMessage;
 
+import AFN.AFN;
+import AFN.Estado;
+import AFN.Transicion;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -19,20 +23,13 @@ public class Main {
 		AFN afn=new AFN();
 		while(true){
 			try {
-				System.out.print("Ingrese la ruta del archivo a cargar");
+				System.out.println("Ingrese la ruta del archivo a cargar");
 				path= obj.nextLine();
 				afn=createAFNFromFile(path);  // regresa  un objeto tipo AFN a partir de la ruta de un archivo 
 				if(afn.getIdAFN() != null){ //si el afn se creo correctamente pide la cadena a evaluar  
 					System.out.println("ingrese la cadena a analizar");
 					String str=obj.nextLine();
-					if(Analizador.cadena(str, afn)){ // recibe la cadena a evaluar y el afn que la valída regresa un booleano
-						System.out.println("La cadena " + str +" es valida");
-//						Analizador.imprimirAFN(afn);
-//						if(!Analizador.imprimirRecorrido())
-//							System.out.println("no se ha analizado ningun automata");
-					}else{
-						System.out.println("La cadena " + str +" es invalida");
-					}	
+//					
 					
 				}
 			} catch (Exception e) {
@@ -193,7 +190,7 @@ public class Main {
 		return valid;
 	}
 	
-	private static  boolean validateAlfabeto(char s ,String[] alfabeto){
+	private static  boolean validateAlfabeto(char s ,String[] alfabeto){ //recibe un caracter y un array de String y busca el caracter en el array 
 		boolean valid = false;
 		for (String simbolo : alfabeto) {
 			if(simbolo.charAt(0) == s){
