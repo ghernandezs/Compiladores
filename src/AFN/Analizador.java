@@ -10,7 +10,6 @@ import AFN.Transicion;
 
 public abstract  class Analizador {
 	public static final char EPSILON='\u0000';
-	private static  List<Set<Estado>> recorrido=new ArrayList <Set<Estado>>();
 	
 	public static  boolean cadena(String cadena,AFN afn){
 		int index=0;
@@ -21,21 +20,9 @@ public abstract  class Analizador {
 		e.add(i);
 		Set<Estado> c=afn.cerraduraEpsilon(e);
 		while (cadena.length() > index) {
-			
-			for (Estado estado : c) {
-				for (Transicion transicion : estado.getTransiciones()) {
-					for(Estado destino :transicion.getDestinos()){
-						System.out.print( destino.getIdEstado()+"("+transicion.getSimbolo()+")->" +estado.getIdEstado()+"->");
-						if(afn.getEstadosFinales().contains(estado))
-							break;
-							
-					}
-				}
-			}
-			System.out.println("");
+
 			caracterActual=cadena.charAt(index);
 			Set<Estado> r=afn.irA(c,caracterActual);
-//			recorrido.add(r);
 			if(r.isEmpty()){
 				belongs = false;
 			}
@@ -85,10 +72,7 @@ public abstract  class Analizador {
 		System.out.println("Transiciones");
 		for (Transicion transicion: estadoInicial.getTransiciones()) {
 			System.out.println("simbolo: " + transicion.getSimbolo());
-			for (Estado destino : transicion.getDestinos()) {
-				System.out.println("idDestino: " + destino.getIdEstado() ) ;
-				
-			}
+			System.out.println("idDestino: " + transicion.getDestino().getIdEstado() ) ;
 		}
 		
 		System.out.println(" estado intermedio");

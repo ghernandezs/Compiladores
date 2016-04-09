@@ -110,11 +110,8 @@ public class Main {
 					Estado estadoDestino = getEstado(transicionArray[2], estadosSet);
 					// Valida que los  simbolos y los estados de las transiciones esten definidos en su respectivo elemento de quintupla
 					if(validateEstado(estadoOrigen) && validateEstado(estadoDestino) && validateAlfabeto(simbolo, alfabetoArray)){     
-						Set<Estado> destinos = new HashSet<Estado>();
-//						agrega las transiciones a los estados
-						destinos.add(estadoDestino);
 						Transicion t=new Transicion();
-							t.setDestinos(destinos);
+							t.setDestino(estadoDestino);
 							t.setSimbolo(simbolo);
 						estadoOrigen.addTransicion(t);
 					}else{

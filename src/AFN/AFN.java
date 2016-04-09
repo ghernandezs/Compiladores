@@ -2,6 +2,7 @@ package AFN;
 
 
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -22,18 +23,15 @@ public class AFN {
 		Estado estadoPrincipal=new Estado(IdEstado.nextId());
 		Estado estadoFinal= new Estado(IdEstado.nextId());	
 		
-		 Set<Estado> destinos = new  HashSet<Estado>();
-//		 	System.out.println(estadoPrincipal.getIdEstado());
-			destinos.add(estadoPrincipal);	
 		Transicion t=new Transicion();
-			t.setDestinos(destinos);
+			t.setDestino(estadoPrincipal);
 			estadoInicial.addTransicion(t);
 			EstadosEpsilon.add(estadoInicial);
 
 		 Set<Estado>destinos2=new HashSet<Estado>();
 		destinos2.add(estadoFinal);
 		Transicion t2=new Transicion();	
-		t2.setDestinos(destinos2);
+		t2.setDestino(estadoPrincipal);
 		t2.setSimbolo(simbolo);
 		
 		estadoPrincipal.addTransicion(t2);
@@ -71,11 +69,8 @@ public class AFN {
 	public void concatenar(AFN afn){
 		
 		for (Estado estado : estadosFinales) {
-			Set<Estado> d=new HashSet<Estado>(); 
-				d.add(afn.getEstadoInicial());
 			Transicion t=new Transicion();
-				t.setDestinos(d);
-			estado.addTransicion(t);
+				t.setDestino(afn.getEstadoInicial());
 		}
 		estadosFinales=afn.getEstadosFinales();
 		
@@ -86,18 +81,16 @@ public class AFN {
 	public void or(AFN afn){
 		Estado nei=new Estado(IdEstado.nextId());
 		Estado nef=new Estado(IdEstado.nextId());
-		Set<Estado> destinos=new HashSet<Estado>();
-			destinos.add(estadoInicial);
-			destinos.add(afn.getEstadoInicial());
-		Transicion ti=new Transicion();
-			ti.setDestinos(destinos);
-		nei.addTransicion(ti);
+		Transicion ti1=new Transicion();
+			ti1.setDestino(estadoInicial);
+		Transicion ti2=new Transicion();
+			ti2.setDestino(afn.getEstadoInicial());
 		EstadosEpsilon.add(nei);
 		Set<Estado> destinos2= new HashSet<Estado>();
 		destinos2.add(nef);
 		
 		Transicion tf=new Transicion();
-			tf.setDestinos(destinos2);
+			tf.setDestino(nef);
 		estadoInicial=nei;
 		for (Estado estado : estadosFinales) {
 			estado.addTransicion(tf);
@@ -110,10 +103,8 @@ public class AFN {
 	}
 	
 	public void CerraduraPositiva(){
-		Set<Estado> destinos=new HashSet<Estado>();
-			destinos.add(estadoInicial);
 		Transicion t=new Transicion();
-			t.setDestinos(destinos);
+			t.setDestino(estadoInicial);
 			
 			
 		for (Estado estado : estadosFinales) {
@@ -128,11 +119,14 @@ public class AFN {
 		Estado nef= new Estado(IdEstado.nextId());
 		destinos.add(estadoInicial);
 		destinos.add(nef);
-		Transicion t=new Transicion();
-		t.setDestinos(destinos);
+		Transicion t1=new Transicion();
+		t1.setDestino(estadoInicial);
+		Transicion t2=new Transicion();
+			t2.setDestino(nef);
 		
 		for (Estado estado : estadosFinales) {
-			estado.addTransicion(t);
+			estado.addTransicion(t1);
+			estado.addTransicion(t2);
 			EstadosEpsilon.add(estado);
 		Set<Estado> efilanes= new HashSet<Estado>();	
 			 efilanes.add(nef);
@@ -142,15 +136,18 @@ public class AFN {
 		
 		Set<Estado>destinos2 = new HashSet<Estado>();
 			destinos2.add(nef); 
-		Transicion t2=new Transicion();	
-			t2.setDestinos(destinos2);
-		estadoInicial.addTransicion(t2);	
+		Transicion t3=new Transicion();	
+			t3.setDestino(nef);
+		estadoInicial.addTransicion(t3);	
 	} 
 	
 	public void pregunta(){
-		Transicion t= new Transicion();
-			t.setDestinos(getEstadosFinales());
-		estadoInicial.addTransicion(t);	
+		for(Estado e :getEstadosFinales()){
+			Transicion t= new Transicion();
+			t.setDestino(e);
+			estadoInicial.addTransicion(t);
+		} 
+			
 	}
 	
 	public Set<Estado> cerraduraEpsilon(Set<Estado> e){
@@ -168,9 +165,7 @@ public class AFN {
 			d.add(c);
 			for (Transicion t : c.getTransiciones()) {
 				if(t.getSimbolo() == Analizador.EPSILON){
-					for (Estado estado : t.getDestinos()) {
-						s.push(estado);
-					}
+					s.push(t.getDestino());
 				}
 			}
 			
@@ -186,8 +181,7 @@ public class AFN {
 			ts=estado.getTransiciones();
 			for (Transicion transicion: ts) {
 				if(transicion.getSimbolo() == simbolo ){
-					for(Estado destino :transicion.getDestinos())
-					d.add(destino);
+					d.add(transicion.getDestino());
 				}
 			}
 		}
@@ -198,6 +192,22 @@ public class AFN {
 	
 	public Set<Estado> irA(Set<Estado> e,char simbolo){
 		return cerraduraEpsilon(mover(e,simbolo));
+	}
+	
+	public String validaCadena(String cadena){
+		
+		String recorrido;
+		Queue<Estado> q;
+		Integer contador;
+		Integer estados;
+		Integer index=0;
+		char caracterActual = cadena.charAt(index);
+		
+		 for (Transicion t : estadoInicial.getTransiciones()) {
+//			if()
+		} 
+		
+		return null;
 	}
 	
 }	

@@ -8,7 +8,7 @@ import AFN.Estado;
 
 public class Transicion {
 	private char simbolo;
-	private Set<Estado> destinos =new HashSet<Estado>();
+	private Estado destino; 
 	
 	public char getSimbolo() {
 		return simbolo;
@@ -16,12 +16,13 @@ public class Transicion {
 	public void setSimbolo(char simbolo) {
 		this.simbolo = simbolo;
 	}
-	public Set<Estado> getDestinos() {
-		return destinos;
+	public Estado getDestino() {
+		return destino;
 	}
-	public void setDestinos(Set<Estado> destinos) {
-		this.destinos = destinos;
+	public void setDestino(Estado destino) {
+		this.destino = destino;
 	}
+	
 	
 	
 }
