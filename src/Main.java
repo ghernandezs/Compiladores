@@ -12,6 +12,7 @@ import java.util.Set;
 import org.omg.IOP.ExceptionDetailMessage;
 
 import AFN.AFN;
+import AFN.Analizador;
 import AFN.Estado;
 import AFN.Transicion;
 
@@ -29,7 +30,8 @@ public class Main {
 				if(afn.getIdAFN() != null){ //si el afn se creo correctamente pide la cadena a evaluar  
 					System.out.println("ingrese la cadena a analizar");
 					String str=obj.nextLine();
-//					
+					if(Analizador.cadena(str, afn))
+						System.out.println(afn.getRecorrido(str));
 					
 				}
 			} catch (Exception e) {
@@ -100,6 +102,7 @@ public class Main {
 				
 					afn.setEstadoInicial(estadoInicialAFN);
 					afn.setEstadosFinales(estadosFinalesAFN);
+					afn.setEstados(estadosSet);
 				
 					//agrega las transiciones a los estados 
 					
@@ -122,15 +125,12 @@ public class Main {
 				}
 			}else{
 				if (!estadosFinalesValidos) {
-					System.out.println("Uno  o mas estados finales no se rncuentran en la lista");
+					System.out.println("Uno  o mas estados finales no se encuentran en la lista");
 				}
 				if(!estadoInicialValido) {
 					System.out.println("El estado inicial no se encuetra en la lista de estados");
 				}
-			}	
-			
-			
-
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

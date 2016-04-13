@@ -1,16 +1,19 @@
 package AFN;
 
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
-import AFN.Transicion;
-
 public class AFN {
 	private Integer idAFN;
 	private Estado estadoInicial;
+	private Set<Estado> estados;
 	private Set<Estado> estadosFinales=new HashSet<Estado>();
 	
 	public AFN(){
@@ -64,6 +67,15 @@ public class AFN {
 
 	public void setEstadosFinales(Set<Estado> estadosFinales) {
 		this.estadosFinales = estadosFinales;
+	}
+	
+
+	public Set<Estado> getEstados() {
+		return estados;
+	}
+
+	public void setEstados(Set<Estado> estados) {
+		this.estados = estados;
 	}
 
 	public void concatenar(AFN afn){
@@ -194,20 +206,62 @@ public class AFN {
 		return cerraduraEpsilon(mover(e,simbolo));
 	}
 	
-	public String validaCadena(String cadena){
+	public String getRecorrido(String cadena){
 		
-		String recorrido;
-		Queue<Estado> q;
-		Integer contador;
-		Integer estados;
+		String recorrido="";
+		Queue<Map<String, Object>> q = new ArrayDeque<Map<String,Object>>();
+		Integer contador=0;
+		Integer nestados=0;
 		Integer index=0;
 		char caracterActual = cadena.charAt(index);
 		
 		 for (Transicion t : estadoInicial.getTransiciones()) {
-//			if()
+			if(caracterActual == t.getSimbolo()){
+				Map<String, Object> elemento=new HashMap<String,Object>();
+				recorrido= estadoInicial.getIdEstado() +"("+t.getSimbolo() +") -> " +t.getDestino().getIdEstado()+",";
+				elemento.put("estado", t.getDestino());
+				elemento.put("recorrido", recorrido);
+				q.add(elemento);
+				nestados++;
+			}
+			
+			
+			
+		}
+		 index++;
+		while(cadena.length()>index){
+			caracterActual=cadena.charAt(index);
+			contador=q.size();
+			if(contador == 0){
+				contador=nestados;
+				nestados=0;
+			}else if (contador>0) {
+				Map<String , Object> ele = q.remove();
+				Estado estado=(Estado) ele.get("estado");
+				nestados--;
+			}
+			for (Estado e : estados) {
+				for (Transicion t : e.getTransiciones()) {
+					if(caracterActual== t.getSimbolo()){
+						String r =e.getIdEstado()+"("+t.getSimbolo()+") -> "+t.getDestino().getIdEstado()+",";
+						recorrido+=r;
+						Map elemento=new HashMap<String,Object>();
+						elemento.put("recorrido", r);
+						elemento.put("estado", t.getDestino());
+						q.add(elemento);
+						nestados++;
+					}
+				}
+			}
+				
+			index++; 
 		} 
-		
-		return null;
+		 recorrido="";
+		 System.out.println(q.size());
+		for (Map<String, Object> map : q) {
+			recorrido+=map.get("recorrido");
+		}	
+		return recorrido;
 	}
 	
 }	

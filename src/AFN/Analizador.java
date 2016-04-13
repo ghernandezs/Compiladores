@@ -76,7 +76,6 @@ public abstract  class Analizador {
 		}
 		
 		System.out.println(" estado intermedio");
-//		Estado estadoPrincipal= null;
 		
 		System.out.println("estados Finales");
 		for (Estado estado : afn.getEstadosFinales()) {
