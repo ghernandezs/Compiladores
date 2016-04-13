@@ -218,9 +218,9 @@ public class AFN {
 		 for (Transicion t : estadoInicial.getTransiciones()) {
 			if(caracterActual == t.getSimbolo()){
 				Map<String, Object> elemento=new HashMap<String,Object>();
-				recorrido= estadoInicial.getIdEstado() +"("+t.getSimbolo() +") -> " +t.getDestino().getIdEstado()+",";
+				String r= estadoInicial.getIdEstado() +"("+t.getSimbolo() +") -> " +t.getDestino().getIdEstado()+",";
 				elemento.put("estado", t.getDestino());
-				elemento.put("recorrido", recorrido);
+				elemento.put("recorrido", r);
 				q.add(elemento);
 				nestados++;
 			}
@@ -229,22 +229,22 @@ public class AFN {
 			
 		}
 		 index++;
+		 contador=q.size();
 		while(cadena.length()>index){
 			caracterActual=cadena.charAt(index);
-			contador=q.size();
+
 			if(contador == 0){
 				contador=nestados;
 				nestados=0;
 			}else if (contador>0) {
 				Map<String , Object> ele = q.remove();
-				Estado estado=(Estado) ele.get("estado");
+				Estado e=(Estado) ele.get("estado");
+				recorrido+=ele.get("recorrido").toString();
 				nestados--;
-			}
-			for (Estado e : estados) {
 				for (Transicion t : e.getTransiciones()) {
 					if(caracterActual== t.getSimbolo()){
 						String r =e.getIdEstado()+"("+t.getSimbolo()+") -> "+t.getDestino().getIdEstado()+",";
-						recorrido+=r;
+							
 						Map elemento=new HashMap<String,Object>();
 						elemento.put("recorrido", r);
 						elemento.put("estado", t.getDestino());
@@ -253,13 +253,12 @@ public class AFN {
 					}
 				}
 			}
-				
 			index++; 
 		} 
-		 recorrido="";
-		 System.out.println(q.size());
 		for (Map<String, Object> map : q) {
-			recorrido+=map.get("recorrido");
+			if((estadosFinales.contains((Estado)(map.get("estado"))))){
+				recorrido+=map.get("recorrido");
+			}
 		}	
 		return recorrido;
 	}
